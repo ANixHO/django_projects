@@ -1,0 +1,12 @@
+<h1>Our recipe list</h1>
+
+{% if recipes_list %}
+<ul>
+    {% for list in recipes_list %}
+        <li>{{list}}</li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>There are no todo items in the library.</p>
+{% endif %}
+<p>You can <a href="{% url 'logout' %}?next={% url 'recipes:open' %}">Logout</a></p>
