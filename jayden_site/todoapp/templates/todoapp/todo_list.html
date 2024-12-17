@@ -1,53 +1,73 @@
-<head>
+{% extends "base.html" %}
+{% block content %}
+    {% csrf_token %}
+    <div class="container">
+        <div class="row p-2">
+            <div class="col-7">
+                <h1> {{ username }}'s Todo List</h1>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'todo:add' %}">Add New Todo</a>
+            </div>
+            <div class="col-2">
+                <p><a href="{% url 'logout' %}?next={% url 'todo:login' %}">Log out</a></p>
+            </div>
+        </div>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-</head>
+        <div class="row px-5">
+            {% if todo_list %}
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="col-1">Status</th>
+                        <th class="col-1">Deadline</th>
+                        <th class="col-2">Title</th>
+                        <th class="col-7">Description</th>
+                        <th class="col-1">Operation</th>
 
-<body>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for todo in todo_list %}
+                        <tr>
+                            <td>
+                                <form action="{% url 'todo:check_completed' todo.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn {% if todo.completed %} btn-success {% else %} btn-secondary {% endif %}"
+                                    >
+                                        {% if todo.completed %}
+                                            Completed
+                                        {% else %}
+                                            In Progress
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                            <td>{{ todo.deadline }}</td>
+                            <td>{{ todo.title }}</td>
+                            <td>{{ todo.description }}</td>
 
-<h1 class="p-5">Todo List</h1>
+                            <td>
+                                <form action="{% url 'todo:update' todo.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                                <form action="{% url 'todo:delete' todo.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger" type="submit"
+                                            onclick="return confirm('Are you sure to delete?')">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>There are no todo items in the library.</p>
+            {% endif %}
+        </div>
+    </div>
 
-<div class="px-5">
-{% if todo_list %}
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th class="col-1">Completed</th>
-            <th class="col-1">Deadline</th>
-            <th class="col-2">Title</th>
-            <th class="col-6">Description</th>
-            <th class="col-2">Operation</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        {% for todo in todo_list %}
-            <tr>
-                <td>
-                    <button class="btn {% if todo.completed == true %} btn-success {% else %} btn-secondary {% endif %}"
-                            value ="{{ todo.id }}" onClick={{ completeAction }}>
-                        {% if todo.completed == true %} Completed {% else %} In Progress {% endif %}
-                    </button>
-                </td>
-                <td>{{ todo.deadline }}</td>
-                <td>{{ todo.title }}</td>
-                <td>{{ todo.description }}</td>
-
-                <td>
-                    <button class="btn btn-primary" type="submit" onclick={{ updateAction }}>Update</button>
-                    <span>  </span>
-                    <button class="btn btn-danger" type="submit" onclick={{ deleteAction }}>Delete</button>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div>
-{% else %}
-<p>There are no todo items in the library.</p>
-{% endif %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+{% endblock %}
