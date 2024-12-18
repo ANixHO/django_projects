@@ -2,6 +2,7 @@
 {% block content %}
     {% csrf_token %}
     <div class="container">
+<!--   header section -->
         <div class="row p-2">
             <div class="col-7">
                 <h1> {{ username }}'s Todo List</h1>
@@ -14,9 +15,11 @@
             </div>
         </div>
 
+<!--  todo list body section -->
         <div class="row px-5">
             {% if todo_list %}
                 <table class="table table-bordered">
+<!--              table header -->
                     <thead>
                     <tr>
                         <th class="col-1">Status</th>
@@ -27,10 +30,12 @@
 
                     </tr>
                     </thead>
+<!-- table body -->
                     <tbody>
                     {% for todo in todo_list %}
                         <tr>
                             <td>
+<!-- status button, hit the button can change the status between completed and in progress -->
                                 <form action="{% url 'todo:check_completed' todo.id %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn {% if todo.completed %} btn-success {% else %} btn-secondary {% endif %}"
@@ -43,15 +48,19 @@
                                     </button>
                                 </form>
                             </td>
+<!--  other fields -->
                             <td>{{ todo.deadline }}</td>
                             <td>{{ todo.title }}</td>
                             <td>{{ todo.description }}</td>
-
+<!--  operation section,
+      hit the update button can redirect to update page -->
                             <td>
                                 <form action="{% url 'todo:update' todo.id %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn btn-primary" type="submit">Update</button>
                                 </form>
+<!--  hit the delete button, the alert window will come up first,
+                            if hit yes, then complete the todo item -->
                                 <form action="{% url 'todo:delete' todo.id %}" method="POST">
                                     {% csrf_token %}
                                     <button class="btn btn-danger" type="submit"

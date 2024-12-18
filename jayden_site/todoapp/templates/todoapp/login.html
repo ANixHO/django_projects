@@ -4,11 +4,13 @@
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div style="width : 20rem">
             <h2>Login</h2>
+
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-danger" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endif %}
+
             <form method="POST">
                 {% csrf_token %}
                 <div class="form-group mb-3">
@@ -25,6 +27,7 @@
                 <button type="submit" class="btn btn-primary w-100">Login</button>
                 <small>You don't have an account yet? <a href="{% url 'todo:register' %}">Register here</a></small>
             </form>
+
         </div>
     </div>
 
